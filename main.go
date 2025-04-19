@@ -2,12 +2,12 @@ package main
 
 import (
 	"embed"
+	"encoding/json"
 	"fmt"
 	"io/fs"
 	"net/http"
 	"os"
 	"regexp"
-	"text/template"
 
 	"github.com/makinori/jitsi-welcome/anime"
 	"github.com/makinori/jitsi-welcome/common"
@@ -50,22 +50,38 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 		templateHTMLBytes, _ = os.ReadFile("template.html")
 	}
 
-	t, err := template.New("index.html").Parse(string(templateHTMLBytes))
-	if err != nil {
-		log.Error("failed to parse template", "err", err)
-		http.Error(w, "failed to parse template", http.StatusInternalServerError)
-		return
-	}
+	w.Write(templateHTMLBytes)
 
-	err = t.Execute(w, map[string]string{
-		"RandomRoomName": getJitsiRoomName(),
+	// t, err := template.New("index.html").Parse(string(templateHTMLBytes))
+	// if err != nil {
+	// 	log.Error("failed to parse template", "err", err)
+	// 	http.Error(w, "failed to parse template", http.StatusInternalServerError)
+	// 	return
+	// }
+
+	// err = t.Execute(w, map[string]string{
+	// 	"RandomRoomName": getJitsiRoomName(),
+	// })
+
+	// if err != nil {
+	// 	log.Error("failed to run template", "err", err)
+	// 	http.Error(w, "failed to run template", http.StatusInternalServerError)
+	// 	return
+	// }
+}
+
+func apiHandler(w http.ResponseWriter, r *http.Request) {
+	data, err := json.Marshal(map[string]string{
+		"name": getJitsiRoomName(),
 	})
 
 	if err != nil {
-		log.Error("failed to run template", "err", err)
-		http.Error(w, "failed to run template", http.StatusInternalServerError)
+		log.Error("failed to marshal json", "err", err)
+		http.Error(w, "", http.StatusInternalServerError)
 		return
 	}
+
+	w.Write(data)
 }
 
 func main() {
@@ -74,9 +90,11 @@ func main() {
 		log.Fatal("failed to get assets dir", "err", err)
 	}
 
-	http.Handle("GET /welcome-assets/",
-		http.StripPrefix("/welcome-assets/", http.FileServerFS(assetsFS)),
+	http.Handle("GET /welcome/",
+		http.StripPrefix("/welcome/", http.FileServerFS(assetsFS)),
 	)
+
+	http.HandleFunc("GET /welcome/name", apiHandler)
 
 	http.HandleFunc("GET /{$}", indexHandler)
 

@@ -28,7 +28,7 @@ welcome:
         - >
             traefik.http.routers.jitsi-welcome.rule=
             Host(`jitsi.hotmilk.space`) &&
-            (Path(`/`) || PathPrefix(`/welcome-assets/`))
+            (Path(`/`) || PathPrefix(`/welcome/`))
         - traefik.http.routers.jitsi-welcome.entrypoints=websecure
         - traefik.http.routers.jitsi-welcome.service=jitsi-welcome
         - traefik.http.services.jitsi-welcome.loadbalancer.server.port=8080

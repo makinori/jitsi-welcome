@@ -31,7 +31,7 @@
 
 			@font-face {
 				font-family: "SN Pro";
-				src: url("/welcome-assets/SNPro-VariableRegular.woff2")
+				src: url("/welcome/SNPro-VariableRegular.woff2")
 					format("woff2-variations");
 				font-weight: 200 900;
 				font-style: normal;
@@ -39,7 +39,7 @@
 
 			@font-face {
 				font-family: "SN Pro";
-				src: url("/welcome-assets/SNPro-VariableItalic.woff2")
+				src: url("/welcome/SNPro-VariableItalic.woff2")
 					format("woff2-variations");
 				font-weight: 200 900;
 				font-style: italic;
@@ -53,7 +53,7 @@
 						rgba(17, 17, 17, 0.7),
 						rgba(17, 17, 17, 0.7)
 					),
-					url("/welcome-assets/background.jpg");
+					url("/welcome/background.jpg");
 				background-size: cover;
 				background-position: center;
 				overflow: hidden;
@@ -139,12 +139,16 @@
 		</div>
 		<script>
 			const form = document.getElementById("form");
-			form.addEventListener("submit", e => {
+			form.addEventListener("submit", async e => {
 				e.preventDefault();
 
 				let name = form.querySelector("input").value;
 				if (name == null || name == "") {
-					name = "{{.RandomRoomName}}";
+					// name = "{{.RandomRoomName}}";
+					// prevent caching
+					const res = await fetch("/welcome/name");
+					const data = await res.json();
+					name = data.name;
 				}
 
 				window.location.href = "/" + name;
