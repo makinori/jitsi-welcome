@@ -12,27 +12,27 @@ Example service:
 
 ```yml
 welcome:
-	build: ./jitsi-welcome
-	restart: ${RESTART_POLICY:-unless-stopped}
-	environment:
-		PORT: 8080
-		ANILIST_USERNAME: makinori
-		CACHE_PATH: /cache/cache.json
-	volumes:
-		- ./jitsi-welcome-cache:/cache
-	labels:
-		- service=jitsi-web
-		- traefik.enable=true
-		- >
-			traefik.http.routers.jitsi-welcome.rule=
-			Host(`jitsi.hotmilk.space`) &&
-			(Path(`/`) || PathPrefix(`/welcome-assets/`))
-		- traefik.http.routers.jitsi-welcome.entrypoints=websecure
-		- traefik.http.routers.jitsi-welcome.service=jitsi-welcome
-		- traefik.http.services.jitsi-welcome.loadbalancer.server.port=8080
-		- traefik.http.routers.jitsi-welcome.tls.certresolver=le
-		- traefik.docker.network=traefik
-	networks:
-		meet.jitsi:
-		traefik:
+    build: ./jitsi-welcome
+    restart: ${RESTART_POLICY:-unless-stopped}
+    environment:
+        PORT: 8080
+        ANILIST_USERNAME: makinori
+        CACHE_PATH: /cache/cache.json
+    volumes:
+        - ./jitsi-welcome-cache:/cache
+    labels:
+        - service=jitsi-web
+        - traefik.enable=true
+        - >
+            traefik.http.routers.jitsi-welcome.rule=
+            Host(`jitsi.hotmilk.space`) &&
+            (Path(`/`) || PathPrefix(`/welcome-assets/`))
+        - traefik.http.routers.jitsi-welcome.entrypoints=websecure
+        - traefik.http.routers.jitsi-welcome.service=jitsi-welcome
+        - traefik.http.services.jitsi-welcome.loadbalancer.server.port=8080
+        - traefik.http.routers.jitsi-welcome.tls.certresolver=le
+        - traefik.docker.network=traefik
+    networks:
+        meet.jitsi:
+        traefik:
 ```
