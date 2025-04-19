@@ -6,6 +6,8 @@ https://jitsi.hotmilk.space
 
 Grabs all the character names from all the anime I've seen, caches them and uses them for generating a random room name.
 
+`DEV=1 go run .`
+
 ### Docker Compose and Traefik
 
 Example service:
