@@ -33,6 +33,5 @@ welcome:
         - traefik.http.routers.jitsi-welcome.tls.certresolver=le
         - traefik.docker.network=traefik
     networks:
-        meet.jitsi:
-        traefik:
+        - traefik
 ```
