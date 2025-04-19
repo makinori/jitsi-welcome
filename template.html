@@ -1,0 +1,131 @@
+<html>
+	<head>
+		<title>Hotmilk Jitsi</title>
+		<style>
+			* {
+				margin: 0;
+			}
+
+			@font-face {
+				font-family: "SN Pro";
+				src: url("/welcome-assets/SNPro-VariableRegular.woff2")
+					format("woff2-variations");
+				font-weight: 200 900;
+				font-style: normal;
+			}
+
+			@font-face {
+				font-family: "SN Pro";
+				src: url("/welcome-assets/SNPro-VariableItalic.woff2")
+					format("woff2-variations");
+				font-weight: 200 900;
+				font-style: italic;
+			}
+
+			body {
+				font-family: "SN Pro", sans-serif;
+				background-color: #000;
+				background-image: linear-gradient(
+						0deg,
+						rgba(0, 0, 0, 0.7),
+						rgba(0, 0, 0, 0.7)
+					),
+					url("/welcome-assets/background.jpg");
+				background-size: cover;
+				background-position: center;
+				overflow: hidden;
+				width: 100vw;
+				height: 100vh;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				color: #fff;
+			}
+
+			.content {
+				margin-bottom: 32px;
+			}
+
+			.content,
+			.content > form {
+				display: flex;
+				flex-direction: column;
+				gap: 16px;
+				align-items: flex-start;
+			}
+
+			.content h1 {
+				font-size: 48px;
+				line-height: 32px;
+				font-weight: 800;
+				letter-spacing: -0.03em;
+			}
+
+			input {
+				font-family: "SN Pro", sans-serif;
+				padding: 6px 12px;
+				border-radius: 3px;
+				border: none;
+				font-size: 20px;
+				border: solid 3px rgba(255, 255, 255, 0.4);
+				color: #fff;
+				background: transparent;
+				font-weight: 500;
+			}
+
+			input::placeholder {
+				color: rgba(255, 255, 255, 0.5);
+			}
+
+			input:focus {
+				outline: none;
+			}
+
+			.content input {
+				width: 350px;
+			}
+
+			button {
+				font-family: "SN Pro", sans-serif;
+				padding: 6px 12px;
+				border-radius: 3px;
+				border: none;
+				font-size: 20px;
+				background: #ff1744;
+				color: #fff;
+				font-weight: 800;
+			}
+
+			.content button {
+				width: 150px;
+				/* width: 100%; */
+			}
+		</style>
+	</head>
+	<body>
+		<div class="content">
+			<h1>hotmilk jitsi</h1>
+			<form id="form">
+				<input
+					type="text"
+					placeholder="leave empty for random"
+					autocomplete="off"
+				/>
+				<button type="submit">join</button>
+			</form>
+		</div>
+		<script>
+			const form = document.getElementById("form");
+			form.addEventListener("submit", e => {
+				e.preventDefault();
+
+				let name = form.querySelector("input").value;
+				if (name == null || name == "") {
+					name = "{{.RandomRoomName}}";
+				}
+
+				window.location.href = "/" + name;
+			});
+		</script>
+	</body>
+</html>
