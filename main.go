@@ -76,7 +76,7 @@ func main() {
 		http.StripPrefix("/welcome/", http.FileServerFS(assetsFS)),
 	)
 
-	http.HandleFunc("GET /welcome/name", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("GET /welcome/anime-name", func(w http.ResponseWriter, r *http.Request) {
 		apiHandler(w, r, anime.GenerateJitsiRoomName)
 	})
 

@@ -90,7 +90,7 @@
 			input[type="text"],
 			button {
 				font-family: "SN Pro", sans-serif;
-				padding: 6px 12px;
+				padding: 6px 10px;
 				border-radius: 12px;
 				border: none;
 				font-size: inherit;
@@ -163,7 +163,7 @@
 				flex-direction: row;
 			}
 
-			.content #regular-name-input {
+			.content #anime-name-input {
 				margin-right: 8px;
 			}
 
@@ -186,18 +186,16 @@
 				<input
 					id="name-input"
 					type="text"
-					placeholder="leave empty for random name"
+					placeholder="leave empty for random room name"
 					autocomplete="off"
 				/>
 				<div class="hstack">
 					<input
-						id="regular-name-input"
+						id="anime-name-input"
 						type="checkbox"
 						autocomplete="off"
 					/>
-					<label for="regular-name-input">
-						generate regular name
-					</label>
+					<label for="anime-name-input">use anime room name</label>
 				</div>
 				<button type="submit">join</button>
 			</form>
@@ -206,19 +204,19 @@
 			const form = document.getElementById("form");
 
 			const nameInputEl = form.querySelector("#name-input");
-			const regularNameInputEl = form.querySelector(
-				"#regular-name-input",
-			);
+			const animeNameInputEl = form.querySelector("#anime-name-input");
 
 			form.addEventListener("submit", async e => {
 				e.preventDefault();
 
 				let name = nameInputEl.value;
-				let regularName = regularNameInputEl.checked;
+				let animeName = animeNameInputEl.checked;
 
 				if (name == null || name == "") {
 					const res = await fetch(
-						regularName ? "/welcome/regular-name" : "/welcome/name",
+						animeName
+							? "/welcome/anime-name"
+							: "/welcome/regular-name",
 					);
 					const data = await res.json();
 					name = data.name;
