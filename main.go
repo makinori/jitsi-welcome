@@ -63,6 +63,8 @@ func apiHandler(w http.ResponseWriter, r *http.Request, fn func() string) {
 		return
 	}
 
+	w.Header().Add("Cache-Control", "no-store")
+
 	w.Write(data)
 }
 
