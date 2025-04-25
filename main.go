@@ -7,10 +7,10 @@ import (
 	"io/fs"
 	"net/http"
 	"os"
-	"regexp"
 
 	"github.com/makinori/jitsi-welcome/anime"
 	"github.com/makinori/jitsi-welcome/common"
+	"github.com/makinori/jitsi-welcome/jitsi"
 
 	"github.com/charmbracelet/log"
 )
@@ -19,24 +19,6 @@ var (
 	//go:embed template.html assets
 	staticContent embed.FS
 )
-
-func getJitsiRoomName() string {
-	name, err := anime.GetRandomAnimeName(common.ConfigAniListUsername)
-	if err != nil {
-		log.Error("failed to get random anime name", "err", err)
-		return "FailedToGetRandomRoomName"
-	}
-
-	// accents and diacritics included
-	r := regexp.MustCompile("(?i)[^a-zA-Z\u00C0-\u024F\u1E00-\u1EFF]")
-
-	// jitsi supports special characters though
-	// name = norm.NFKD.String(name)
-
-	name = r.ReplaceAllString(name, "")
-
-	return name
-}
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 	templateHTMLBytes, err := staticContent.ReadFile("template.html")
@@ -70,9 +52,9 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	// }
 }
 
-func apiHandler(w http.ResponseWriter, r *http.Request) {
+func apiHandler(w http.ResponseWriter, r *http.Request, fn func() string) {
 	data, err := json.Marshal(map[string]string{
-		"name": getJitsiRoomName(),
+		"name": fn(),
 	})
 
 	if err != nil {
@@ -94,7 +76,13 @@ func main() {
 		http.StripPrefix("/welcome/", http.FileServerFS(assetsFS)),
 	)
 
-	http.HandleFunc("GET /welcome/name", apiHandler)
+	http.HandleFunc("GET /welcome/name", func(w http.ResponseWriter, r *http.Request) {
+		apiHandler(w, r, anime.GenerateJitsiRoomName)
+	})
+
+	http.HandleFunc("GET /welcome/regular-name", func(w http.ResponseWriter, r *http.Request) {
+		apiHandler(w, r, jitsi.GenerateRoomName)
+	})
 
 	http.HandleFunc("GET /{$}", indexHandler)
 

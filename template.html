@@ -53,7 +53,7 @@
 						rgba(17, 17, 17, 0.7),
 						rgba(17, 17, 17, 0.7)
 					),
-					url("/welcome/background.jpg");
+					url("/welcome/background-blurred.jpg");
 				background-size: cover;
 				background-position: center;
 				overflow: hidden;
@@ -63,6 +63,8 @@
 				align-items: center;
 				justify-content: center;
 				color: #fff;
+				user-select: none;
+				font-size: 20px;
 			}
 
 			.content {
@@ -73,42 +75,72 @@
 			.content > form {
 				display: flex;
 				flex-direction: column;
-				gap: 16px;
+				gap: 8px;
 				align-items: flex-start;
 			}
 
 			.content h1 {
 				font-size: 48px;
-				line-height: 32px;
+				line-height: 36px;
 				font-weight: 800;
 				letter-spacing: -0.03em;
+				margin-bottom: 8px;
 			}
 
-			input,
+			input[type="text"],
 			button {
 				font-family: "SN Pro", sans-serif;
 				padding: 6px 12px;
 				border-radius: 12px;
 				border: none;
-				font-size: 20px;
+				font-size: inherit;
 			}
 
-			input {
+			input[type="text"] {
 				border: solid 3px rgba(255, 255, 255, 0.4);
 				color: #fff;
 				background: transparent;
 				font-weight: 500;
 			}
 
-			input::placeholder {
+			input[type="checkbox"] {
+				appearance: none;
+				/* background-color: red; */
+				margin: 0;
+				font: inherit;
+				color: currentColor;
+				width: 32px;
+				height: 32px;
+				border: solid 3px rgba(255, 255, 255, 0.4);
+				border-radius: 12px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				cursor: pointer;
+			}
+
+			input[type="checkbox"]::before {
+				content: "";
+				width: 20px;
+				height: 20px;
+				border-radius: 6px;
+				background-color: rgba(255, 255, 255, 0.6);
+				display: none;
+			}
+
+			input[type="checkbox"]:checked::before {
+				display: initial;
+			}
+
+			input[type="text"]::placeholder {
 				color: rgba(255, 255, 255, 0.5);
 			}
 
-			input:focus {
+			input[type="text"]:focus {
 				outline: none;
 			}
 
-			.content input {
+			.content #name-input {
 				width: 350px;
 			}
 
@@ -123,6 +155,28 @@
 				width: 150px;
 				/* width: 100%; */
 			}
+
+			.hstack {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				flex-direction: row;
+			}
+
+			.content #regular-name-input {
+				margin-right: 8px;
+			}
+
+			label {
+				cursor: pointer;
+				opacity: 0.8;
+				font-weight: 500;
+				letter-spacing: -0.02em;
+			}
+
+			.content button[type="submit"] {
+				margin-top: 8px;
+			}
 		</style>
 	</head>
 	<body>
@@ -130,23 +184,42 @@
 			<h1>hotmilk jitsi</h1>
 			<form id="form">
 				<input
+					id="name-input"
 					type="text"
-					placeholder="leave empty for random"
+					placeholder="leave empty for random name"
 					autocomplete="off"
 				/>
+				<div class="hstack">
+					<input
+						id="regular-name-input"
+						type="checkbox"
+						autocomplete="off"
+					/>
+					<label for="regular-name-input">
+						generate regular name
+					</label>
+				</div>
 				<button type="submit">join</button>
 			</form>
 		</div>
 		<script>
 			const form = document.getElementById("form");
+
+			const nameInputEl = form.querySelector("#name-input");
+			const regularNameInputEl = form.querySelector(
+				"#regular-name-input",
+			);
+
 			form.addEventListener("submit", async e => {
 				e.preventDefault();
 
-				let name = form.querySelector("input").value;
+				let name = nameInputEl.value;
+				let regularName = regularNameInputEl.checked;
+
 				if (name == null || name == "") {
-					// name = "{{.RandomRoomName}}";
-					// prevent caching
-					const res = await fetch("/welcome/name");
+					const res = await fetch(
+						regularName ? "/welcome/regular-name" : "/welcome/name",
+					);
 					const data = await res.json();
 					name = data.name;
 				}

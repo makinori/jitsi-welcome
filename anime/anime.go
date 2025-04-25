@@ -9,6 +9,7 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
+	"regexp"
 	"slices"
 	"strconv"
 	"strings"
@@ -262,4 +263,22 @@ func GetRandomAnimeName(username string) (string, error) {
 	i := rand.Intn(len(data.Names))
 
 	return data.Names[i], nil
+}
+
+func GenerateJitsiRoomName() string {
+	name, err := GetRandomAnimeName(common.ConfigAniListUsername)
+	if err != nil {
+		log.Error("failed to get random anime name", "err", err)
+		return "FailedToGetRandomRoomName"
+	}
+
+	// accents and diacritics included
+	r := regexp.MustCompile("(?i)[^a-zA-Z\u00C0-\u024F\u1E00-\u1EFF]")
+
+	// jitsi supports special characters though
+	// name = norm.NFKD.String(name)
+
+	name = r.ReplaceAllString(name, "")
+
+	return name
 }
